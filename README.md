@@ -1,4 +1,4 @@
-# 用Ebitengine写一个飞机大战
+# 用Go-Ebitengine写一个飞机大战
 ![效果](./index/assets/show.png)
 ## 本地运行
 ```bash
