@@ -20,6 +20,8 @@ type Game struct {
 	score     int
 }
 
+var game *Game
+
 func (g *Game) Update() error {
 	g.hero.Update()
 	g.mu.Lock()
@@ -37,7 +39,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	//背景图
 	op := &ebiten.DrawImageOptions{}
-	back,_,_:=ebitenutil.NewImageFromReader(bytes.NewReader(assets.ImgBack))
+	back, _, _ := ebitenutil.NewImageFromReader(bytes.NewReader(assets.ImgBack))
 	screen.DrawImage(back, op)
 	g.mu.Lock()
 	for v := range g.hero.Bullets {
@@ -77,12 +79,15 @@ func checkCollision(airplane *entity.AirPlane, bullet *entity.Bullet) bool {
 		airplane.Y+float64(airplane.Height) < bullet.Y)
 }
 
-func main() {
+func init() {
 	ebiten.SetWindowSize(480, 852)
 	ebiten.SetWindowTitle("飞机大战")
 	air := map[*entity.AirPlane]any{}
-	game := &Game{hero: entity.NewHero(480, 852), mu: &sync.Mutex{}, airPlanes: air}
+	game = &Game{hero: entity.NewHero(480, 852), mu: &sync.Mutex{}, airPlanes: air}
 	entity.StartAirPlane(air, game.mu)
+}
+
+func main() {
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
 	}
